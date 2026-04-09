@@ -1,6 +1,6 @@
 import torch
 import torch.nn.functional as F
-from autoattack.autopgd_base import APGDAttack
+from autoattack.autoattack.autopgd_base import APGDAttack
 
 def autopgd_attack(model, x, y, loss, attack_steps, attack_eps, bn_type, seed, device):
     if bn_type == 'eval':
