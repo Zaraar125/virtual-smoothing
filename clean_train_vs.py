@@ -328,7 +328,9 @@ def train(model, train_loader, optimizer, scheduler, test_loader):
         train_nat_acc = (float(train_nat_correct) / total) * 100
         message = 'Epoch {}, Time {}, LR: {}, Loss: {}, ' \
                   'Training nat acc: {}, train_nat_max_in_v: {}, train_nat_max_in_v_corr: {}, ' \
-            .format(epoch, batch_time, epoch_lr, loss.item(), train_nat_acc, train_nat_max_in_v)
+            .format(epoch, batch_time, epoch_lr, loss.item(), train_nat_acc, train_nat_max_in_v, train_nat_max_in_v_corr)
+                  
+            # .format(epoch, batch_time, epoch_lr, loss.item(), train_nat_acc, train_nat_max_in_v)
         print(message)
 
         # Evaluation
