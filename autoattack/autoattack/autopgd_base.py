@@ -12,7 +12,7 @@ import torch.nn.functional as F
 import math
 import random
 
-from autoattack.other_utils import L0_norm, L1_norm, L2_norm
+from autoattack.autoattack.other_utils import L0_norm, L1_norm, L2_norm
 
 
 
