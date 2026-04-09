@@ -252,9 +252,12 @@ def train(model, train_loader, optimizer, scheduler, test_loader):
                 else:
                     nat_batch_x, batch_y, lam = nn_util.mixup_data(nat_batch_x, batch_y_hard, alpha=0.8, num_classes=NUM_REAL_CLASSES)
             if epoch >= args.vs_warmup:
-                batch_y_soft = constuct_vs_label(batch_y, args.alpha, NUM_REAL_CLASSES, args.v_classes, args.add_noise, v_type=args.v_type, sub_alpha=args.sub_alpha)
+                # batch_y_soft = constuct_vs_label(batch_y, args.alpha, NUM_REAL_CLASSES, args.v_classes, args.add_noise, v_type=args.v_type, sub_alpha=args.sub_alpha)
+                batch_y_soft = constuct_vs_label(batch_y, args.alpha, NUM_REAL_CLASSES, args.v_classes, args.add_noise, v_type=args.v_type)
+
             else:
-                batch_y_soft = constuct_vs_label(batch_y, 0, NUM_REAL_CLASSES, args.v_classes, args.add_noise, v_type=args.v_type, sub_alpha=args.sub_alpha)
+                # batch_y_soft = constuct_vs_label(batch_y, 0, NUM_REAL_CLASSES, args.v_classes, args.add_noise, v_type=args.v_type, sub_alpha=args.sub_alpha)
+                batch_y_soft = constuct_vs_label(batch_y, 0, NUM_REAL_CLASSES, args.v_classes, args.add_noise, v_type=args.v_type)
 
             if args.teacher_cpt_file != '':
                 with torch.no_grad():
