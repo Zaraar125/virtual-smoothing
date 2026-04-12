@@ -81,7 +81,7 @@ parser.add_argument('--magnitude', type=int, default=9, metavar='N', help="'Magn
 parser.add_argument('--gpus', type=int, nargs='+', default=[], help='List of GPU IDs to use.')
 parser.add_argument('--T_0', default=10, type=int, help='Parameter T_0 in CosineAnnealingWarmRestarts')
 parser.add_argument('--T_mult', default=2, type=int, help='Parameter T_mult in CosineAnnealingWarmRestarts')
-
+parser.add_argument('--training_logs', default="training_logs/cifar_10/resnet_18", type=str, help='Directory for training logs')
 args = parser.parse_args()
 
 use_cuda = not args.no_cuda and torch.cuda.is_available()
