@@ -8,3 +8,4 @@ torchvision
 einops
 torchsummary
 timm
+future
