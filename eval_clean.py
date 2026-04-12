@@ -191,7 +191,41 @@ def get_all_test_data(test_loader):
             y_test = torch.cat((y_test, batch_y), 0)
 
     return x_test, y_test
+def print_ece_results(ece, bin_info):
+    print("\n" + "="*75)
+    print(f"  Expected Calibration Error (ECE): {ece.item():.4f}")
+    print("="*75)
+    print(f"  {'Bin Range':<18} {'Samples':>8} {'Accuracy':>10} {'Avg Conf':>10} {'Gap':>8}")
+    print("-"*75)
 
+    bin_width = bin_info['bin_width']
+    num_bins = bin_info['num']
+    total_samples = sum(
+        bin_info[round(i * bin_width, 10)]['num']
+        for i in range(num_bins)
+        if round(i * bin_width, 10) in bin_info
+    )
+
+    for i in range(num_bins):
+        bin_lower = round(i * bin_width, 10)
+        bin_upper = round(bin_lower + bin_width, 10)
+        if bin_lower not in bin_info:
+            continue
+        b = bin_info[bin_lower]
+        num = b['num']
+        label = f"  {bin_lower:.1f} – {bin_upper:.1f}"
+        if num == 0:
+            print(f"{label:<18} {'0':>8} {'—':>10} {'—':>10} {'—':>8}")
+        else:
+            acc = b['acc']
+            conf = b['avg_conf']
+            gap = conf - acc
+            bar = "█" * int(acc * 20)
+            print(f"{label:<18} {num:>8} {acc:>9.1%} {conf:>9.1%} {gap:>+8.3f}  {bar}")
+
+    print("-"*75)
+    print(f"  {'Total Samples':<17} {total_samples:>8}")
+    print("="*75 + "\n")
 
 def cal_ece(model, test_loader):
     y_test = torch.tensor([]).to(device)
@@ -212,7 +246,8 @@ def cal_ece(model, test_loader):
         probs = torch.cat((probs, batch_probs), dim=0)
         y_test = torch.cat((y_test, batch_y), dim=0)
     ece, bin_info = expected_calibration_error(probs.cpu().numpy(), y_test.cpu().numpy(), M=10)
-    print(ece, bin_info)
+    # print(ece, bin_info)
+    print_ece_results(ece, bin_info)
 
 
 def expected_calibration_error(samples, true_labels, M=5):
