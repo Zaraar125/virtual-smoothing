@@ -15,7 +15,10 @@ This code is implemented in PyTorch, and we have tested the code under the follo
 `python rob_train_vs.py --model_name WRN-34-10 --dataset cifar10 --training_method pgd --v_classes 10 --alpha 0.9 --gpuid 0 --model_dir $MODEL_DIR$`
 
 **Evaluation**    
-`python eval_rob --gpuid 0 --v_classes 10 --model_file $MODEL_DIR$`
+1. Standard Evaluation 
+`python eval_clean.py --gpuid 0 --v_classes 10 --model_file $MODEL_DIR$`
+2.  Adersarial Evaluation
+`python eval_rob.py --gpuid 0 --v_classes 10 --model_file $MODEL_DIR$`
 
 **Reference Code**\    
 [1] AT: https://github.com/locuslab/robust_overfitting \
