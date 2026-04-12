@@ -110,7 +110,8 @@ else:
 # settings
 if not os.path.exists(args.model_dir):
     os.makedirs(args.model_dir)
-
+if not os.path.exists(args.training_logs):
+    os.makedirs(args.training_logs)
 def save_cpt(model, optimizer, epoch):
     path = os.path.join(args.model_dir, '{0}_model_epoch{1}.pt'.format(args.training_method, epoch))
     torch.save(model.state_dict(), path)
