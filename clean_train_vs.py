@@ -125,6 +125,37 @@ def resume(model, optimizer, epoch):
     optimizer.load_state_dict(torch.load(path))
     return model, optimizer
 
+def log_epoch(
+    epoch, batch_time, epoch_lr, loss,
+    train_nat_acc, train_nat_max_in_v, train_nat_max_in_v_corr,
+    test_nat_acc, test_nat_max_in_v, test_nat_max_in_v_corr,
+    msc, msc_v, std_corr_v_conf, mean_corr_v_conf
+):
+    message = f"""
+================================================================================
+Epoch: {epoch}
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | {batch_time:.4f}
+| Learning Rate             | {epoch_lr:.6f}
+| Overall Train Loss        | {loss:.6f}
+| Train Nat Acc             | {train_nat_acc:.4f}
+| Train Max In V            | {train_nat_max_in_v:.4f}
+| Train Max In V (Corr)     | {train_nat_max_in_v_corr:.4f}
+| Test Nat Acc              | {test_nat_acc:.4f}
+| Test Max In V             | {test_nat_max_in_v:.4f}
+| Test Max In V (Corr)      | {test_nat_max_in_v_corr:.4f}
+| MSC                       | {msc:.4f}
+| MSC_V                     | {msc_v:.4f}
+| Std Corr V Conf           | {std_corr_v_conf:.4f}
+| Mean Corr V Conf          | {mean_corr_v_conf:.4f}
+| alpha                     | {args.alpha}
+================================================================================
+"""
+    with open(os.path.join(args.training_logs, 'log.txt'), 'a') as f:
+        f.write(message)
+    print(message)
 
 def get_all_test_data(test_loader):
     x_test = None
@@ -240,6 +271,8 @@ def train(model, train_loader, optimizer, scheduler, test_loader):
         train_nat_correct = 0
         train_nat_max_in_v = 0
         train_nat_max_in_v_corr = 0
+        total_loss = 0.0
+        total_samples = 0
         for i, data in enumerate(train_loader):
             nat_batch_x, batch_y = data
             batch_y_hard = batch_y + 0
@@ -289,6 +322,9 @@ def train(model, train_loader, optimizer, scheduler, test_loader):
             else:
                 raise ValueError('unsupported training method: {0}'.format(args.training_method))
 
+            batch_size = len(batch_y_hard)
+            total_loss += loss.item() * batch_size
+            total_samples += batch_size
             # compute output
             optimizer.zero_grad()
             loss.backward()
@@ -327,12 +363,6 @@ def train(model, train_loader, optimizer, scheduler, test_loader):
         end_time = time.time()
         batch_time = end_time - start_time
         train_nat_acc = (float(train_nat_correct) / total) * 100
-        message = 'Epoch {}, Time {}, LR: {}, Loss: {}, ' \
-                  'Training nat acc: {}, train_nat_max_in_v: {}, train_nat_max_in_v_corr: {}, ' \
-            .format(epoch, batch_time, epoch_lr, loss.item(), train_nat_acc, train_nat_max_in_v, train_nat_max_in_v_corr)
-                  
-            # .format(epoch, batch_time, epoch_lr, loss.item(), train_nat_acc, train_nat_max_in_v)
-        print(message)
 
         # Evaluation
         test_nat_acc, test_nat_max_in_v, test_nat_max_in_v_corr, corr_conf, corr_v_conf = nn_util.eval(model, test_loader, NUM_REAL_CLASSES)
@@ -341,9 +371,11 @@ def train(model, train_loader, optimizer, scheduler, test_loader):
         if corr_v_conf.size(1) > 1:
             msc_v = corr_v_conf.max(dim=1)[0].mean()
             std_corr_v_conf, mean_corr_v_conf = torch.std_mean(corr_v_conf, unbiased=False)
-        print('test nat acc: {}, test_nat_max_in_v: {}, test_nat_max_in_v_corr: {}, msc: {}, msc_v: {}, '
-              'std_corr_v_conf: {}, mean_corr_v_conf: {}'.format(test_nat_acc, test_nat_max_in_v, test_nat_max_in_v_corr, msc, msc_v, std_corr_v_conf, mean_corr_v_conf))
-        print('================================================================')
+
+        epoch_loss = total_loss / total_samples
+        log_epoch(epoch, batch_time, epoch_lr, epoch_loss, train_nat_acc, train_nat_max_in_v, 
+                  train_nat_max_in_v_corr, test_nat_acc, test_nat_max_in_v, 
+                  test_nat_max_in_v_corr, msc, msc_v, std_corr_v_conf, mean_corr_v_conf)
         save_cpt(model, optimizer, epoch)
 
     # return loss.item(), test_nat_acc, test_nat_v_acc, test_nat_inv_acc
