@@ -209,8 +209,9 @@ def print_ece_results(ece, bin_info, logs_dir=None):
     lines.append(f"  Model: {args.model_name}")
     lines.append(f"  Virtual Smoothing Classes: {args.v_classes}")
     lines.append(f"  Alpha (Total Confidence of Virtual Classes): {args.alpha}")
+    lines.append(f"  Max Epoch Trained: {args.final_epoch}")
     if args.model_name == 'resnet-18-custom':
-        lines.append(f"  Max Epoch Trained: {args.final_epoch}")
+        
         lines.append(f"  ResNet-18 Custom Configuration:")
         lines.append(f"      num_blocks: {args.resnet_num_blocks}")
         lines.append(f"      base_width: {args.base_width}")
