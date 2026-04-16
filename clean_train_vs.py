@@ -402,9 +402,9 @@ def get_model(model_name, num_real_classes, num_v_classes, normalizer=None, data
         elif model_name == 'resnet-18':
             return resnet.ResNet18(num_real_classes=num_real_classes, num_v_classes=num_v_classes,
                                    normalizer=normalizer)
-        # elif model_name == 'resnet-18-custom':
-        #     return resnet_18_custom.ResNet18(num_blocks=resnet_num_blocks, base_width=base_width, num_real_classes=num_real_classes, num_v_classes=num_v_classes,
-        #                            normalizer=normalizer)
+        elif model_name == 'resnet-18-custom':
+            return resnet_18_custom.ResNet18(num_blocks=resnet_num_blocks, base_width=base_width, num_real_classes=num_real_classes, num_v_classes=num_v_classes,
+                                   normalizer=normalizer)
         elif model_name == 'resnet-34':
             return resnet.ResNet34(num_real_classes=num_real_classes, num_v_classes=num_v_classes,
                                    normalizer=normalizer)
