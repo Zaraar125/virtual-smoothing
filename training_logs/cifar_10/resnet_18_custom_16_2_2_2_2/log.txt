@@ -1,0 +1,630 @@
+
+================================================================================
+Epoch: 1
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 17.3408
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.652785
+| Train Nat Acc             | 34.9000
+| Train Max In V            | 1124.0000
+| Train Max In V (Corr)     | 166.0000
+| Test Nat Acc              | 50.8000
+| Test Max In V             | 11.0000
+| Test Max In V (Corr)      | 3.0000
+| MSC                       | 0.3391
+| MSC_V                     | 0.0523
+| Std Corr V Conf           | 0.0086
+| Mean Corr V Conf          | 0.0491
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 2
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.8175
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.420642
+| Train Nat Acc             | 55.5240
+| Train Max In V            | 16.0000
+| Train Max In V (Corr)     | 4.0000
+| Test Nat Acc              | 59.3600
+| Test Max In V             | 5.0000
+| Test Max In V (Corr)      | 2.0000
+| MSC                       | 0.3694
+| MSC_V                     | 0.0522
+| Std Corr V Conf           | 0.0079
+| Mean Corr V Conf          | 0.0493
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 3
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 17.5122
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.297030
+| Train Nat Acc             | 65.8460
+| Train Max In V            | 16.0000
+| Train Max In V (Corr)     | 5.0000
+| Test Nat Acc              | 70.1300
+| Test Max In V             | 2.0000
+| Test Max In V (Corr)      | 2.0000
+| MSC                       | 0.3911
+| MSC_V                     | 0.0528
+| Std Corr V Conf           | 0.0070
+| Mean Corr V Conf          | 0.0507
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 4
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.1549
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.225755
+| Train Nat Acc             | 71.9180
+| Train Max In V            | 6.0000
+| Train Max In V (Corr)     | 2.0000
+| Test Nat Acc              | 74.8300
+| Test Max In V             | 0.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.3836
+| MSC_V                     | 0.0546
+| Std Corr V Conf           | 0.0072
+| Mean Corr V Conf          | 0.0529
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 5
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 17.3688
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.178870
+| Train Nat Acc             | 76.1240
+| Train Max In V            | 4.0000
+| Train Max In V (Corr)     | 3.0000
+| Test Nat Acc              | 70.5800
+| Test Max In V             | 1.0000
+| Test Max In V (Corr)      | 1.0000
+| MSC                       | 0.4044
+| MSC_V                     | 0.0529
+| Std Corr V Conf           | 0.0070
+| Mean Corr V Conf          | 0.0515
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 6
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.9874
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.149224
+| Train Nat Acc             | 77.7800
+| Train Max In V            | 2.0000
+| Train Max In V (Corr)     | 1.0000
+| Test Nat Acc              | 78.0900
+| Test Max In V             | 1.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4287
+| MSC_V                     | 0.0509
+| Std Corr V Conf           | 0.0059
+| Mean Corr V Conf          | 0.0498
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 7
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.9049
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.125589
+| Train Nat Acc             | 80.3180
+| Train Max In V            | 1.0000
+| Train Max In V (Corr)     | 0.0000
+| Test Nat Acc              | 72.0700
+| Test Max In V             | 1.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4481
+| MSC_V                     | 0.0488
+| Std Corr V Conf           | 0.0071
+| Mean Corr V Conf          | 0.0479
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 8
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.7118
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.107564
+| Train Nat Acc             | 81.2700
+| Train Max In V            | 0.0000
+| Train Max In V (Corr)     | 0.0000
+| Test Nat Acc              | 80.9000
+| Test Max In V             | 0.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4352
+| MSC_V                     | 0.0506
+| Std Corr V Conf           | 0.0051
+| Mean Corr V Conf          | 0.0498
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 9
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.8511
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.094115
+| Train Nat Acc             | 82.6620
+| Train Max In V            | 1.0000
+| Train Max In V (Corr)     | 0.0000
+| Test Nat Acc              | 82.9500
+| Test Max In V             | 0.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4475
+| MSC_V                     | 0.0500
+| Std Corr V Conf           | 0.0053
+| Mean Corr V Conf          | 0.0494
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 10
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.9004
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.080893
+| Train Nat Acc             | 84.1620
+| Train Max In V            | 3.0000
+| Train Max In V (Corr)     | 0.0000
+| Test Nat Acc              | 82.6000
+| Test Max In V             | 0.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4380
+| MSC_V                     | 0.0510
+| Std Corr V Conf           | 0.0056
+| Mean Corr V Conf          | 0.0504
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 11
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 17.2611
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.070481
+| Train Nat Acc             | 84.5520
+| Train Max In V            | 0.0000
+| Train Max In V (Corr)     | 0.0000
+| Test Nat Acc              | 78.4400
+| Test Max In V             | 1.0000
+| Test Max In V (Corr)      | 1.0000
+| MSC                       | 0.4494
+| MSC_V                     | 0.0501
+| Std Corr V Conf           | 0.0054
+| Mean Corr V Conf          | 0.0496
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 12
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.6868
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.059861
+| Train Nat Acc             | 84.8780
+| Train Max In V            | 2.0000
+| Train Max In V (Corr)     | 0.0000
+| Test Nat Acc              | 81.4100
+| Test Max In V             | 1.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4600
+| MSC_V                     | 0.0488
+| Std Corr V Conf           | 0.0046
+| Mean Corr V Conf          | 0.0484
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 13
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.7248
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.055109
+| Train Nat Acc             | 85.8620
+| Train Max In V            | 2.0000
+| Train Max In V (Corr)     | 0.0000
+| Test Nat Acc              | 82.3500
+| Test Max In V             | 1.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4560
+| MSC_V                     | 0.0496
+| Std Corr V Conf           | 0.0052
+| Mean Corr V Conf          | 0.0492
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 14
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.8302
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.048256
+| Train Nat Acc             | 85.9320
+| Train Max In V            | 0.0000
+| Train Max In V (Corr)     | 0.0000
+| Test Nat Acc              | 83.4600
+| Test Max In V             | 0.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4460
+| MSC_V                     | 0.0505
+| Std Corr V Conf           | 0.0043
+| Mean Corr V Conf          | 0.0502
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 15
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.8418
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.041068
+| Train Nat Acc             | 86.9360
+| Train Max In V            | 2.0000
+| Train Max In V (Corr)     | 1.0000
+| Test Nat Acc              | 83.2900
+| Test Max In V             | 0.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4605
+| MSC_V                     | 0.0497
+| Std Corr V Conf           | 0.0057
+| Mean Corr V Conf          | 0.0494
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 16
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.7887
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.037039
+| Train Nat Acc             | 87.3580
+| Train Max In V            | 1.0000
+| Train Max In V (Corr)     | 1.0000
+| Test Nat Acc              | 84.0200
+| Test Max In V             | 0.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4492
+| MSC_V                     | 0.0503
+| Std Corr V Conf           | 0.0046
+| Mean Corr V Conf          | 0.0500
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 17
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.8189
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.031467
+| Train Nat Acc             | 87.5260
+| Train Max In V            | 1.0000
+| Train Max In V (Corr)     | 1.0000
+| Test Nat Acc              | 85.1500
+| Test Max In V             | 0.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4624
+| MSC_V                     | 0.0494
+| Std Corr V Conf           | 0.0050
+| Mean Corr V Conf          | 0.0491
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 18
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.6391
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.031550
+| Train Nat Acc             | 87.5700
+| Train Max In V            | 0.0000
+| Train Max In V (Corr)     | 0.0000
+| Test Nat Acc              | 84.5500
+| Test Max In V             | 0.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4607
+| MSC_V                     | 0.0496
+| Std Corr V Conf           | 0.0046
+| Mean Corr V Conf          | 0.0494
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 19
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.5905
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.023917
+| Train Nat Acc             | 88.2400
+| Train Max In V            | 1.0000
+| Train Max In V (Corr)     | 0.0000
+| Test Nat Acc              | 84.4100
+| Test Max In V             | 0.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4646
+| MSC_V                     | 0.0494
+| Std Corr V Conf           | 0.0042
+| Mean Corr V Conf          | 0.0492
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 20
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.7009
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.018911
+| Train Nat Acc             | 88.3220
+| Train Max In V            | 0.0000
+| Train Max In V (Corr)     | 0.0000
+| Test Nat Acc              | 84.9900
+| Test Max In V             | 0.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4584
+| MSC_V                     | 0.0495
+| Std Corr V Conf           | 0.0040
+| Mean Corr V Conf          | 0.0494
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 21
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 17.8498
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.015040
+| Train Nat Acc             | 88.7800
+| Train Max In V            | 1.0000
+| Train Max In V (Corr)     | 0.0000
+| Test Nat Acc              | 85.8300
+| Test Max In V             | 0.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4576
+| MSC_V                     | 0.0501
+| Std Corr V Conf           | 0.0047
+| Mean Corr V Conf          | 0.0500
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 22
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.5055
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.015083
+| Train Nat Acc             | 88.4260
+| Train Max In V            | 1.0000
+| Train Max In V (Corr)     | 0.0000
+| Test Nat Acc              | 85.3000
+| Test Max In V             | 0.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4644
+| MSC_V                     | 0.0495
+| Std Corr V Conf           | 0.0053
+| Mean Corr V Conf          | 0.0494
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 23
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.5562
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.013099
+| Train Nat Acc             | 88.9460
+| Train Max In V            | 0.0000
+| Train Max In V (Corr)     | 0.0000
+| Test Nat Acc              | 85.9600
+| Test Max In V             | 0.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4514
+| MSC_V                     | 0.0508
+| Std Corr V Conf           | 0.0048
+| Mean Corr V Conf          | 0.0507
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 24
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.3557
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.009090
+| Train Nat Acc             | 88.9100
+| Train Max In V            | 1.0000
+| Train Max In V (Corr)     | 0.0000
+| Test Nat Acc              | 84.4400
+| Test Max In V             | 0.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4571
+| MSC_V                     | 0.0502
+| Std Corr V Conf           | 0.0045
+| Mean Corr V Conf          | 0.0501
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 25
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.2896
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.006763
+| Train Nat Acc             | 89.3320
+| Train Max In V            | 3.0000
+| Train Max In V (Corr)     | 2.0000
+| Test Nat Acc              | 85.6500
+| Test Max In V             | 0.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4565
+| MSC_V                     | 0.0502
+| Std Corr V Conf           | 0.0048
+| Mean Corr V Conf          | 0.0501
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 26
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.3392
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.005100
+| Train Nat Acc             | 89.4420
+| Train Max In V            | 1.0000
+| Train Max In V (Corr)     | 0.0000
+| Test Nat Acc              | 85.6500
+| Test Max In V             | 1.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4662
+| MSC_V                     | 0.0495
+| Std Corr V Conf           | 0.0037
+| Mean Corr V Conf          | 0.0494
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 27
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.3607
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.002343
+| Train Nat Acc             | 89.7260
+| Train Max In V            | 0.0000
+| Train Max In V (Corr)     | 0.0000
+| Test Nat Acc              | 85.7800
+| Test Max In V             | 0.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4666
+| MSC_V                     | 0.0493
+| Std Corr V Conf           | 0.0056
+| Mean Corr V Conf          | 0.0493
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 28
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.4108
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 1.998811
+| Train Nat Acc             | 90.3800
+| Train Max In V            | 1.0000
+| Train Max In V (Corr)     | 1.0000
+| Test Nat Acc              | 84.9100
+| Test Max In V             | 0.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4625
+| MSC_V                     | 0.0497
+| Std Corr V Conf           | 0.0052
+| Mean Corr V Conf          | 0.0496
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 29
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.4924
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 2.000907
+| Train Nat Acc             | 89.6060
+| Train Max In V            | 0.0000
+| Train Max In V (Corr)     | 0.0000
+| Test Nat Acc              | 86.3300
+| Test Max In V             | 0.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4597
+| MSC_V                     | 0.0502
+| Std Corr V Conf           | 0.0037
+| Mean Corr V Conf          | 0.0501
+| alpha                     | 0.5
+================================================================================
+
+================================================================================
+Epoch: 30
+
+| Metric                    | Value          |
+|---------------------------|----------------|
+| Time                      | 16.2498
+| Learning Rate             | 0.100000
+| Overall Train Loss        | 1.996995
+| Train Nat Acc             | 89.7980
+| Train Max In V            | 2.0000
+| Train Max In V (Corr)     | 0.0000
+| Test Nat Acc              | 83.7600
+| Test Max In V             | 0.0000
+| Test Max In V (Corr)      | 0.0000
+| MSC                       | 0.4543
+| MSC_V                     | 0.0509
+| Std Corr V Conf           | 0.0047
+| Mean Corr V Conf          | 0.0509
+| alpha                     | 0.5
+================================================================================
