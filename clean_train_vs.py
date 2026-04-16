@@ -597,8 +597,8 @@ def main():
     cudnn.benchmark = True
 
     # init model, Net() can be also used here for training
-    # model = get_model(args.model_name, num_real_classes=NUM_REAL_CLASSES, num_v_classes=args.v_classes, normalizer=None,
-    #                   dataset=args.dataset, base_width=args.base_width, resnet_num_blocks=args.resnet_num_blocks)
+    model = get_model(args.model_name, num_real_classes=NUM_REAL_CLASSES, num_v_classes=args.v_classes, normalizer=None,
+                      dataset=args.dataset, base_width=args.base_width, resnet_num_blocks=args.resnet_num_blocks)
     if len(args.gpus) > 1:
         model = nn.DataParallel(model.to(device), device_ids=args.gpus, output_device=args.gpus[0])
     else:
