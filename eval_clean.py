@@ -9,6 +9,7 @@ import torchvision.transforms as T
 from torchvision import datasets
 import torch.nn.functional as F
 from models import wideresnet, resnet, resnet_imagenet, resnet_tiny200, mobilenet_v2, resnext_tiny200, resnext_imagenet, resnext_cifar, densenet_cifar, t2t_vit
+from models import resnet_18_custom
 from utils import nn_util, tiny_datasets, imagenet_loader
 from models.simple_vit import SimpleViT
 from models.vit import ViT
@@ -30,7 +31,10 @@ parser.add_argument('--v_classes', default=10, type=int,
                     help='The number of virtual smoothing classes')
 parser.add_argument('--alpha', default=0., type=float, help='Total confidence of virtual smoothing classes')
 parser.add_argument('--temp', default=1.0, type=float, help='temperature scaling')
-
+parser.add_argument('--base_width', default=64, type=int, help='Base width for ResNet-18 model')
+parser.add_argument('--resnet_num_blocks', type=int, nargs='+', default=[2,2,2,2], help='Number of blocks in each layer for ResNet-18 model')
+parser.add_argument('--testing_logs', default="testing_logs/cifar_10/resnet_18", type=str, help='Directory for testing logs')
+parser.add_argument('--final_epoch', default=200, type=int, help='Final epoch number for log naming')
 args = parser.parse_args()
 
 if args.dataset == 'cifar10':
@@ -59,6 +63,8 @@ torch.manual_seed(args.seed)
 device = torch.device("cuda" if use_cuda else "cpu")
 storage_device = torch.device("cpu")
 normalizer = None
+if not os.path.exists(args.testing_logs):
+    os.makedirs(args.testing_logs)
 
 def get_model(model_name, num_real_classes, num_v_classes, normalizer=None, dataset='cifar10'):
     size_3x32x32 = ['svhn', 'cifar10', 'cifar100', 'tiny-imagenet-32x32']
@@ -76,6 +82,9 @@ def get_model(model_name, num_real_classes, num_v_classes, normalizer=None, data
                                          num_v_classes=num_v_classes, normalizer=normalizer)
         elif model_name == 'resnet-18':
             return resnet.ResNet18(num_real_classes=num_real_classes, num_v_classes=num_v_classes,
+                                   normalizer=normalizer)
+        elif model_name == 'resnet-18-custom':
+            return resnet_18_custom.ResNet18(num_blocks=args.resnet_num_blocks, base_width=args.base_width, num_real_classes=num_real_classes, num_v_classes=num_v_classes,
                                    normalizer=normalizer)
         elif model_name == 'resnet-34':
             return resnet.ResNet34(num_real_classes=num_real_classes, num_v_classes=num_v_classes,
@@ -191,9 +200,67 @@ def get_all_test_data(test_loader):
             y_test = torch.cat((y_test, batch_y), 0)
 
     return x_test, y_test
-def print_ece_results(ece, bin_info):
-    print("\n" + "="*75)
-    print(f"  Expected Calibration Error (ECE): {ece.item():.4f}")
+# def print_ece_results(ece, bin_info):
+#     print("\n" + "="*75)
+#     print(f"  Expected Calibration Error (ECE): {ece.item():.4f}")
+
+#     bin_width = bin_info['bin_width']
+#     num_bins = bin_info['num']
+
+#     total_samples = 0
+#     correct_samples = 0
+#     for i in range(num_bins):
+#         bin_lower = round(i * bin_width, 10)
+#         if bin_lower not in bin_info:
+#             continue
+#         b = bin_info[bin_lower]
+#         num = b['num']
+#         total_samples += num
+#         if num > 0:
+#             correct_samples += b['acc'] * num
+
+#     overall_accuracy = correct_samples / total_samples if total_samples > 0 else 0
+#     print(f"  Overall Accuracy:                 {overall_accuracy:.4f} ({overall_accuracy:.1%})")
+#     print("="*75)
+#     print(f"  {'Bin Range':<18} {'Samples':>8} {'Accuracy':>10} {'Avg Conf':>10} {'Gap':>8}")
+#     print("-"*75)
+
+#     for i in range(num_bins):
+#         bin_lower = round(i * bin_width, 10)
+#         bin_upper = round(bin_lower + bin_width, 10)
+#         if bin_lower not in bin_info:
+#             continue
+#         b = bin_info[bin_lower]
+#         num = b['num']
+#         label = f"  {bin_lower:.1f} – {bin_upper:.1f}"
+#         if num == 0:
+#             print(f"{label:<18} {'0':>8} {'—':>10} {'—':>10} {'—':>8}")
+#         else:
+#             acc = b['acc']
+#             conf = b['avg_conf']
+#             gap = acc - conf
+#             bar = "█" * int(acc * 20)
+#             print(f"{label:<18} {num:>8} {acc:>9.1%} {conf:>9.1%} {gap:>+8.3f}  {bar}")
+
+#     print("-"*75)
+#     print(f"  {'Total Samples':<17} {total_samples:>8}")
+#     print("="*75 + "\n")
+import os
+
+def print_ece_results(ece, bin_info, logs_dir=None):
+    
+    lines = []
+    lines.append("\n" + "="*75)
+    lines.append(f"  Dataset: {args.dataset}")
+    lines.append(f"  Model: {args.model_name}")
+    lines.append(f"  Virtual Smoothing Classes: {args.v_classes}")
+    lines.append(f"  Alpha (Total Confidence of Virtual Classes): {args.alpha}")
+    if args.model_name == 'resnet-18-custom':
+        lines.append(f"  Max Epoch Trained: {args.final_epoch}")
+        lines.append(f"  ResNet-18 Custom Configuration:")
+        lines.append(f"      num_blocks: {args.resnet_num_blocks}")
+        lines.append(f"      base_width: {args.base_width}")
+    lines.append(f"  Expected Calibration Error (ECE): {ece.item():.4f}")
 
     bin_width = bin_info['bin_width']
     num_bins = bin_info['num']
@@ -211,10 +278,10 @@ def print_ece_results(ece, bin_info):
             correct_samples += b['acc'] * num
 
     overall_accuracy = correct_samples / total_samples if total_samples > 0 else 0
-    print(f"  Overall Accuracy:                 {overall_accuracy:.4f} ({overall_accuracy:.1%})")
-    print("="*75)
-    print(f"  {'Bin Range':<18} {'Samples':>8} {'Accuracy':>10} {'Avg Conf':>10} {'Gap':>8}")
-    print("-"*75)
+    lines.append(f"  Overall Accuracy:                 {overall_accuracy:.4f} ({overall_accuracy:.1%})")
+    lines.append("="*75)
+    lines.append(f"  {'Bin Range':<18} {'Samples':>8} {'Accuracy':>10} {'Avg Conf':>10} {'Gap':>8}")
+    lines.append("-"*75)
 
     for i in range(num_bins):
         bin_lower = round(i * bin_width, 10)
@@ -225,17 +292,32 @@ def print_ece_results(ece, bin_info):
         num = b['num']
         label = f"  {bin_lower:.1f} – {bin_upper:.1f}"
         if num == 0:
-            print(f"{label:<18} {'0':>8} {'—':>10} {'—':>10} {'—':>8}")
+            lines.append(f"{label:<18} {'0':>8} {'—':>10} {'—':>10} {'—':>8}")
         else:
             acc = b['acc']
             conf = b['avg_conf']
             gap = acc - conf
             bar = "█" * int(acc * 20)
-            print(f"{label:<18} {num:>8} {acc:>9.1%} {conf:>9.1%} {gap:>+8.3f}  {bar}")
+            lines.append(f"{label:<18} {num:>8} {acc:>9.1%} {conf:>9.1%} {gap:>+8.3f}  {bar}")
 
-    print("-"*75)
-    print(f"  {'Total Samples':<17} {total_samples:>8}")
-    print("="*75 + "\n")
+    lines.append("-"*75)
+    lines.append(f"  {'Total Samples':<17} {total_samples:>8}")
+    lines.append("="*75 + "\n")
+
+    # --- Print to terminal ---
+    for line in lines:
+        print(line)
+
+    # --- Save to log file ---
+    # --- Save to log file ---
+    if logs_dir:
+        # os.makedirs(logs_dir, exist_ok=True)
+        log_path = os.path.join(logs_dir, "log.txt")
+        with open(log_path, 'w',encoding='utf-8') as f:
+            for line in lines:
+                f.write(line + "\n")
+        print(f"  [LOG] Saved to {log_path}")
+
     
 def cal_ece(model, test_loader):
     y_test = torch.tensor([]).to(device)
@@ -257,7 +339,7 @@ def cal_ece(model, test_loader):
         y_test = torch.cat((y_test, batch_y), dim=0)
     ece, bin_info = expected_calibration_error(probs.cpu().numpy(), y_test.cpu().numpy(), M=10)
     # print(ece, bin_info)
-    print_ece_results(ece, bin_info)
+    print_ece_results(ece, bin_info,args.testing_logs)
 
 
 def expected_calibration_error(samples, true_labels, M=5):
