@@ -13,6 +13,7 @@ import torch.optim as optim
 from future.backports import OrderedDict
 import numpy as np
 from models import wideresnet, resnet, resnet_imagenet, resnet_tiny200, mobilenet_v2, resnext_tiny200, resnext_imagenet, resnext_cifar, densenet_cifar, t2t_vit
+from models import resnet_18_custom
 from torch.optim.lr_scheduler import CosineAnnealingLR, CosineAnnealingWarmRestarts
 from utils import nn_util, tiny_datasets, imagenet_loader
 
@@ -82,6 +83,8 @@ parser.add_argument('--gpus', type=int, nargs='+', default=[], help='List of GPU
 parser.add_argument('--T_0', default=10, type=int, help='Parameter T_0 in CosineAnnealingWarmRestarts')
 parser.add_argument('--T_mult', default=2, type=int, help='Parameter T_mult in CosineAnnealingWarmRestarts')
 parser.add_argument('--training_logs', default="training_logs/cifar_10/resnet_18", type=str, help='Directory for training logs')
+parser.add_argument('--base_width', default=64, type=int, help='Base width for ResNet-18 model')
+parser.add_argument('--resnet_num_blocks', type=int, nargs='+', default=[2, 2, 2, 2], help='Number of blocks in each layer for ResNet-18 model')
 args = parser.parse_args()
 
 use_cuda = not args.no_cuda and torch.cuda.is_available()
@@ -382,7 +385,7 @@ def train(model, train_loader, optimizer, scheduler, test_loader):
     return loss.item(), test_nat_acc
 
 
-def get_model(model_name, num_real_classes, num_v_classes, normalizer=None, dataset='cifar10'):
+def get_model(model_name, num_real_classes, num_v_classes, normalizer=None, dataset='cifar10', base_width=64, resnet_num_blocks=[2, 2, 2, 2]):
     size_3x32x32 = ['svhn', 'cifar10', 'cifar100', 'tiny-imagenet-32x32']
     size_3x64x64 = ['tiny-imagenet-64x64']
     size_3x224x224 = ['imagenet']
@@ -399,6 +402,9 @@ def get_model(model_name, num_real_classes, num_v_classes, normalizer=None, data
         elif model_name == 'resnet-18':
             return resnet.ResNet18(num_real_classes=num_real_classes, num_v_classes=num_v_classes,
                                    normalizer=normalizer)
+        # elif model_name == 'resnet-18-custom':
+        #     return resnet_18_custom.ResNet18(num_blocks=resnet_num_blocks, base_width=base_width, num_real_classes=num_real_classes, num_v_classes=num_v_classes,
+        #                            normalizer=normalizer)
         elif model_name == 'resnet-34':
             return resnet.ResNet34(num_real_classes=num_real_classes, num_v_classes=num_v_classes,
                                    normalizer=normalizer)
@@ -591,8 +597,8 @@ def main():
     cudnn.benchmark = True
 
     # init model, Net() can be also used here for training
-    model = get_model(args.model_name, num_real_classes=NUM_REAL_CLASSES, num_v_classes=args.v_classes, normalizer=None,
-                      dataset=args.dataset)
+    # model = get_model(args.model_name, num_real_classes=NUM_REAL_CLASSES, num_v_classes=args.v_classes, normalizer=None,
+    #                   dataset=args.dataset, base_width=args.base_width, resnet_num_blocks=args.resnet_num_blocks)
     if len(args.gpus) > 1:
         model = nn.DataParallel(model.to(device), device_ids=args.gpus, output_device=args.gpus[0])
     else:
