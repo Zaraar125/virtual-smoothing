@@ -52,6 +52,8 @@ elif 'tiny-imagenet' in args.dataset:
 elif args.dataset == 'imagenet':
     NUM_REAL_CLASSES = 1000
     # NUM_EXAMPLES = 50000
+elif args.dataset == 'mnist':
+    NUM_REAL_CLASSES = 10
 else:
     raise ValueError('error dataset: {0}'.format(args.dataset))
 
@@ -70,6 +72,7 @@ def get_model(model_name, num_real_classes, num_v_classes, normalizer=None, data
     size_3x32x32 = ['svhn', 'cifar10', 'cifar100', 'tiny-imagenet-32x32']
     size_3x64x64 = ['tiny-imagenet-64x64']
     size_3x224x224 = ['imagenet']
+    size_1x224x224 = ['mnist']
     if dataset in size_3x32x32:
         if model_name == 'wrn-34-10':
             return wideresnet.WideResNet(depth=34, widen_factor=10, num_real_classes=num_real_classes,
@@ -162,10 +165,20 @@ def get_model(model_name, num_real_classes, num_v_classes, normalizer=None, data
                 model = t2t_vit.t2t_vit_14_wide(num_classes=num_real_classes + num_v_classes, drop_path_rate=0.01)
             # return get_t2t_vit(args)
             return model
-        else:
-            raise ValueError('un-supported model: {0}', model_name)
+    elif dataset in size_1x224x224:
+            if 't2t_' in model_name:
+                # Pass in_chans=1 so the first Unfold projection matches
+                # the single grayscale channel of MNIST images.
+                model = _build_t2t_vit(model_name, num_real_classes, num_v_classes, in_chans=1)
+                return model
+            else:
+                raise ValueError(
+                    'Only T2T-ViT variants are supported for MNIST in this codebase. '
+                    'Unsupported model: {0}'.format(model_name)
+                )
+
     else:
-        raise ValueError('un-supported dataset: {0}', dataset)
+        raise ValueError('un-supported dataset: {0}'.format(dataset))
 
 
 def filter_state_dict(state_dict):
@@ -335,7 +348,36 @@ def expected_calibration_error(samples, true_labels, M=5):
             bin_info[bin_lower] = cur_bin_infp
     return ece, bin_info
 
+def _build_t2t_vit(model_name, num_real_classes, num_v_classes, in_chans=3):
+    """
+    Instantiate a T2T-ViT model identified by `model_name`.
 
+    The `in_chans` argument is forwarded to T2T_ViT so that single-channel
+    inputs (e.g. MNIST) are handled correctly without any monkey-patching.
+    The total number of output logits is num_real_classes + num_v_classes.
+    """
+    num_classes = num_real_classes + num_v_classes
+    kwargs = dict(num_classes=num_classes, drop_path_rate=0.01, in_chans=in_chans)
+
+    mapping = {
+        't2t_vit_7':          (t2t_vit.t2t_vit_7,          {}),
+        't2t_vit_10':         (t2t_vit.t2t_vit_10,         {}),
+        't2t_vit_12':         (t2t_vit.t2t_vit_12,         {}),
+        't2t_vit_14':         (t2t_vit.t2t_vit_14,         {}),
+        't2t_vit_19':         (t2t_vit.t2t_vit_19,         {}),
+        't2t_vit_24':         (t2t_vit.t2t_vit_24,         {}),
+        't2t_vit_t_14':       (t2t_vit.t2t_vit_t_14,       {}),
+        't2t_vit_t_19':       (t2t_vit.t2t_vit_t_19,       {}),
+        't2t_vit_t_24':       (t2t_vit.t2t_vit_t_24,       {}),
+        't2t_vit_14_resnext': (t2t_vit.t2t_vit_14_resnext, {}),
+        't2t_vit_14_wide':    (t2t_vit.t2t_vit_14_wide,    {}),
+    }
+
+    if model_name not in mapping:
+        raise ValueError('un-supported T2T-ViT variant: {0}'.format(model_name))
+
+    factory_fn, extra_kwargs = mapping[model_name]
+    return factory_fn(**{**kwargs, **extra_kwargs})
 def main():
     # setup data loader
     kwargs = {'num_workers': 4, 'pin_memory': True} if use_cuda else {}
@@ -371,6 +413,18 @@ def main():
     elif args.dataset == 'imagenet':
         imagenet_root = '../../datasets/'
         train_loader, test_loader = imagenet_loader.data_loader(imagenet_root, batch_size=args.batch_size)
+    elif args.dataset == "mnist":
+        transform_test = T.Compose([
+            T.Resize(224),
+            
+            T.ToTensor(),
+            T.Normalize((0.1307,), (0.3081,)),
+        ])
+        mnist_test  = torchvision.datasets.MNIST(
+            root='../../datasets/mnist/', train=False, download=True, transform=transform_test)
+        test_loader  = torch.utils.data.DataLoader(
+            mnist_test,  batch_size=args.batch_size, shuffle=False, **kwargs)
+    
     else:
         raise ValueError('error dataset: {0}'.format(args.dataset))
 
