@@ -2,3 +2,4 @@ __pycache__/
 .dnn/
 notes.md
 Untitled-1.ipynb
+eval_mnist.py
