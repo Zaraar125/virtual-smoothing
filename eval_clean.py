@@ -35,6 +35,7 @@ parser.add_argument('--base_width', default=64, type=int, help='Base width for R
 parser.add_argument('--resnet_num_blocks', type=int, nargs='+', default=[2,2,2,2], help='Number of blocks in each layer for ResNet-18 model')
 parser.add_argument('--testing_logs', default="testing_logs/cifar_10/resnet_18", type=str, help='Directory for testing logs')
 parser.add_argument('--final_epoch', default=200, type=int, help='Final epoch number for log naming')
+parser.add_argument('--input_chans', default=3, type=int, help='channels for t2t_vit for mnist dataset')
 args = parser.parse_args()
 
 if args.dataset == 'cifar10':
@@ -72,7 +73,7 @@ def get_model(model_name, num_real_classes, num_v_classes, normalizer=None, data
     size_3x32x32 = ['svhn', 'cifar10', 'cifar100', 'tiny-imagenet-32x32']
     size_3x64x64 = ['tiny-imagenet-64x64']
     size_3x224x224 = ['imagenet']
-    size_1x224x224 = ['mnist']
+    size_3x224x224_3d = ['mnist']
     if dataset in size_3x32x32:
         if model_name == 'wrn-34-10':
             return wideresnet.WideResNet(depth=34, widen_factor=10, num_real_classes=num_real_classes,
@@ -165,12 +166,21 @@ def get_model(model_name, num_real_classes, num_v_classes, normalizer=None, data
                 model = t2t_vit.t2t_vit_14_wide(num_classes=num_real_classes + num_v_classes, drop_path_rate=0.01)
             # return get_t2t_vit(args)
             return model
-    elif dataset in size_1x224x224:
+    elif dataset in size_3x224x224_3d:
             if 't2t_' in model_name:
                 # Pass in_chans=1 so the first Unfold projection matches
                 # the single grayscale channel of MNIST images.
-                model = _build_t2t_vit(model_name, num_real_classes, num_v_classes, in_chans=1)
-                return model
+                if args.input_chans == 1:
+                    print("HERE - ",args.input_chans)
+                    model = _build_t2t_vit(model_name, num_real_classes, num_v_classes, in_chans=args.input_chans)
+                    return model
+                elif args.input_chans == 3:
+                    print("HERE - ",args.input_chans)
+                    model = _build_t2t_vit(model_name, num_real_classes, num_v_classes, in_chans=args.input_chans)
+                    return model
+                else:
+                    raise ValueError('Unsupported number of input channels for MNIST: {0}'.format(args.input_chans))
+                
             else:
                 raise ValueError(
                     'Only T2T-ViT variants are supported for MNIST in this codebase. '
@@ -348,7 +358,7 @@ def expected_calibration_error(samples, true_labels, M=5):
             bin_info[bin_lower] = cur_bin_infp
     return ece, bin_info
 
-def _build_t2t_vit(model_name, num_real_classes, num_v_classes, in_chans=3):
+def _build_t2t_vit(model_name, num_real_classes, num_v_classes, in_chans):
     """
     Instantiate a T2T-ViT model identified by `model_name`.
 
@@ -414,12 +424,21 @@ def main():
         imagenet_root = '../../datasets/'
         train_loader, test_loader = imagenet_loader.data_loader(imagenet_root, batch_size=args.batch_size)
     elif args.dataset == "mnist":
-        transform_test = T.Compose([
-            T.Resize(224),
-            
-            T.ToTensor(),
-            T.Normalize((0.1307,), (0.3081,)),
-        ])
+        if args.input_chans == 1:
+            transform_test = T.Compose([
+                T.Resize(224),
+                T.ToTensor(),
+                T.Normalize((0.1307,), (0.3081,)),
+            ])
+        elif args.input_chans == 3:
+            transform_test = T.Compose([
+                T.Resize(224),
+                T.Grayscale(num_output_channels=3),
+                T.ToTensor(),
+                T.Normalize((0.1307,)*3, (0.3081,)*3),
+            ])
+        else:
+            raise ValueError('Unsupported number of input channels for MNIST: {0}'.format(args.input_chans))
         mnist_test  = torchvision.datasets.MNIST(
             root='../../datasets/mnist/', train=False, download=True, transform=transform_test)
         test_loader  = torch.utils.data.DataLoader(

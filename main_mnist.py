@@ -85,6 +85,8 @@ parser.add_argument('--T_mult', default=2, type=int, help='Parameter T_mult in C
 parser.add_argument('--training_logs', default="training_logs/cifar_10/resnet_18", type=str, help='Directory for training logs')
 parser.add_argument('--base_width', default=64, type=int, help='Base width for ResNet-18 model')
 parser.add_argument('--resnet_num_blocks', type=int, nargs='+', default=[2, 2, 2, 2], help='Number of blocks in each layer for ResNet-18 model')
+parser.add_argument('--input_chans', default=3, type=int, help='channels for t2t_vit for mnist dataset')
+
 args = parser.parse_args()
 
 use_cuda = not args.no_cuda and torch.cuda.is_available()
@@ -406,7 +408,7 @@ def get_model(model_name, num_real_classes, num_v_classes, normalizer=None,
     # but they remain single-channel (1-channel / grayscale).            #
     # T2T-ViT accepts an `in_chans` kwarg which we set to 1 here.        #
     # ------------------------------------------------------------------ #
-    size_1x224x224 = ['mnist']
+    size_3x224x224 = ['mnist']
 
     if dataset in size_3x32x32:
         if model_name == 'wrn-34-10':
@@ -489,11 +491,11 @@ def get_model(model_name, num_real_classes, num_v_classes, normalizer=None,
     # Only T2T-ViT-14 and T2T-ViT-24 are required for Q2, but the full  #
     # T2T-ViT family is wired in for completeness.                       #
     # ------------------------------------------------------------------ #
-    elif dataset in size_1x224x224:
+    elif dataset in size_3x224x224:
         if 't2t_' in model_name:
             # Pass in_chans=1 so the first Unfold projection matches
             # the single grayscale channel of MNIST images.
-            model = _build_t2t_vit(model_name, num_real_classes, num_v_classes, in_chans=1)
+            model = _build_t2t_vit(model_name, num_real_classes, num_v_classes, in_chans=3)
             return model
         else:
             raise ValueError(
@@ -644,37 +646,34 @@ def main():
         # mnist_mean = (0.1307,)          # per-channel mean for grayscale
         # mnist_std  = (0.3081,)          # per-channel std  for grayscale
 
-        # transform_train = T.Compose([
-        #     # Upsample to the spatial resolution T2T-ViT was designed for.
-        #     T.Resize(224),
-        #     # Mild spatial jitter to improve generalisation.
-        #     T.RandomCrop(224, padding=8),
-        #     # MNIST digits are symmetric; horizontal flip is valid.
-        #     T.RandomHorizontalFlip(),
-        #     T.ToTensor(),
-        #     T.Normalize(mnist_mean, mnist_std),
-        # ])
+        if args.input_chans == 3:
+            transform_train = T.Compose([
+                T.Resize(224),
+                T.Grayscale(num_output_channels=3),
+                T.RandomCrop(224, padding=4),
+                T.ToTensor(),
+                T.Normalize((0.1307,)*3, (0.3081,)*3),
+            ])
 
-        # transform_test = T.Compose([
-        #     T.Resize(224),
-        #     T.ToTensor(),
-        #     T.Normalize(mnist_mean, mnist_std),
-        # ])
-        transform_train = T.Compose([
-            T.Resize(224),
-            T.Grayscale(num_output_channels=3),
-            T.RandomCrop(224, padding=4),
-            T.ToTensor(),
-            T.Normalize((0.1307,)*3, (0.3081,)*3),
-        ])
+            transform_test = T.Compose([
+                T.Resize(224),
+                T.Grayscale(num_output_channels=3),
+                T.ToTensor(),
+                T.Normalize((0.1307,)*3, (0.3081,)*3),
+            ])
+        elif args.input_chans == 1:
+            transform_train = T.Compose([
+                T.Resize(224),
+                T.RandomCrop(224, padding=4),
+                T.ToTensor(),
+                T.Normalize((0.1307,), (0.3081,)),
+            ])
 
-        transform_test = T.Compose([
-            T.Resize(224),
-            T.Grayscale(num_output_channels=3),
-            T.ToTensor(),
-            T.Normalize((0.1307,)*3, (0.3081,)*3),
-        ])
-
+            transform_test = T.Compose([
+                T.Resize(224),
+                T.ToTensor(),
+                T.Normalize((0.1307,), (0.3081,)),
+            ])
         mnist_train = torchvision.datasets.MNIST(
             root='../../datasets/mnist/', train=True,  download=True, transform=transform_train)
         mnist_test  = torchvision.datasets.MNIST(

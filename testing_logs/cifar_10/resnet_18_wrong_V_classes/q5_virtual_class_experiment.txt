@@ -1,0 +1,79 @@
+
+================================================================================
+  Q5 EXPERIMENT: Virtual Classes at Test Time
+================================================================================
+  Dataset          : cifar10
+  Model            : resnet-18
+  Virtual Classes  : 10   (alpha = 0.5)
+  Temperature      : 1.0
+  Model file       : .dnn/cifar_10/resnet_18/clean_model_epoch30.pt
+  Max epoch trained: 200
+================================================================================
+
+  [Diagnostic] When softmax is computed over ALL classes:
+    Average probability mass absorbed by virtual nodes : 0.5107  (51.07%)
+    Fraction of samples whose argmax falls in virtual space: 0.0000  (0.00%)
+
+--------------------------------------------------------------------------------
+  Strategy                                       Accuracy      ECE  Avg MaxConf
+--------------------------------------------------------------------------------
+  (A) CORRECT  – softmax on real logits only       0.9006   0.0291       0.9296
+  (B1) WRONG   – joint softmax, argmax on real cols    0.9006   0.4435       0.4571
+  (B2) WRONG   – joint softmax, argmax over all cols    0.9006   0.4435       0.4571
+--------------------------------------------------------------------------------
+
+  Delta (A → B1):
+    Accuracy change   : +0.0000  (+0.00 pp)
+    ECE change        : +0.4144  (positive = worse calibration)
+    Avg max-conf change: -0.4726
+
+  Delta (A → B2):
+    Accuracy change   : +0.0000  (+0.00 pp)
+    ECE change        : +0.4144  (positive = worse calibration)
+    Avg max-conf change: -0.4726
+
+================================================================================
+  Per-Bin Detail  |  (A) Correct  vs  (B1) Wrong-real-only
+================================================================================
+  Bin            N(A)   Acc(A)  Conf(A)  |   N(B1)  Acc(B1) Conf(B1)
+--------------------------------------------------------------------------------
+    0.0–0.1         0        —        —  |       8   0.3750   0.0944
+    0.1–0.2         0        —        —  |     187   0.4118   0.1614
+    0.2–0.3         6   0.3333   0.2721  |     594   0.5269   0.2561
+    0.3–0.4        68   0.3382   0.3657  |     802   0.6758   0.3528
+    0.4–0.5       157   0.4586   0.4609  |    5760   0.9526   0.4658
+    0.5–0.6       334   0.5150   0.5487  |    2548   0.9745   0.5337
+    0.6–0.7       377   0.5597   0.6509  |     101   1.0000   0.6129
+    0.7–0.8       427   0.6440   0.7513  |       0        —        —
+    0.8–0.9       644   0.7329   0.8556  |       0        —        —
+    0.9–1.0      7987   0.9740   0.9887  |       0        —        —
+================================================================================
+
+  DISCUSSION
+  ----------------------------------------------------------------------------
+  Virtual smoothing classes are introduced during *training* to act as label-
+  smoothing surrogates: the model is asked to spread a small fraction (alpha)
+  of its total confidence across these K virtual nodes, which prevents over-
+  confidence on real classes. However, the virtual nodes have NO corresponding
+  ground-truth labels in the test set; they are purely a training device.
+
+  Strategy (A) — CORRECT: only the real-class logits are extracted,
+  temperature-scaled, and normalised.  The virtual logits are discarded
+  entirely, so the resulting distribution sums to 1 over the C real classes
+  and directly reflects the model's calibrated belief.
+
+  Strategy (B1) — WRONG: softmax is computed jointly over real + virtual
+  logits. Even when argmax is restricted to real classes, the probability mass
+  is deflated because virtual nodes absorb part of it. Confidences are
+  artificially low, which worsens ECE (the model now looks under-confident
+  rather than well-calibrated) and can change which real class wins the
+  argmax, reducing accuracy.
+
+  Strategy (B2) — WRONG: same joint softmax, but argmax is taken over all C +
+  K columns. Predictions can now fall into the virtual space (none of which
+  match any true label), so accuracy drops by the fraction of test samples
+  whose top-1 logit is a virtual node.  Because the model was explicitly
+  trained to route alpha probability to virtual nodes, this fraction is non-
+  trivial even with small alpha.
+
+================================================================================
